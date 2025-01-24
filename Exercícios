@@ -1,0 +1,183 @@
+* Exercício 1
+
+O valor da variável SOMA ao final do processamento será 91.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+* Exercício 2
+
+#include <iostream>
+
+//Função para verificar se o número pertence à sequência de Fibonacci
+bool PertenceFibonacci(int numero) {
+    int a = 0, b = 1;
+    if (numero == a || numero == b) return true; //Verifica se é 0 ou 1
+
+    int proximo = a + b;
+    while (proximo <= numero) {
+        if (proximo == numero) return true; //Número encontrado na sequência
+        a = b;
+        b = proximo;
+        proximo = a + b; //Atualiza para o próximo número
+    }
+    return false; //Número não encontrado
+}
+
+int main() {
+    int numero;
+    
+    std::cout << "Digite um número para verificar se pertence à sequência de Fibonacci: ";
+    std::cin >> numero;
+
+    if (pertenceFibonacci(numero)) {
+        std::cout << "O número " << numero << " pertence à sequência de Fibonacci." << std::endl;
+    } else {
+        std::cout << "O número " << numero << " não pertence à sequência de Fibonacci." << std::endl;
+    }
+
+    return 0;
+}
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+* Exercício 3
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
+struct Faturamento {
+    int dia;
+    double valor;
+};
+
+//Função para calcular a média mensal (ignorando dias sem faturamento)
+double CalcularMediaMensal(const std::vector<Faturamento>& faturamentos) {
+    double soma = 0.0;
+    int DiasComFaturamento = 0;
+
+    for (const auto& f : faturamentos) {
+        if (f.valor > 0) { //Ignora dias sem faturamento
+            soma += f.valor;
+            DiasComFaturamento++;
+        }
+    }
+    return DiasComFaturamento > 0 ? soma / DiasComFaturamento : 0.0;
+}
+
+//Função para contar dias acima da média
+int ContarDiasAcimaDaMedia(const std::vector<Faturamento>& faturamentos, double media) {
+    int count = 0;
+    for (const auto& f : faturamentos) {
+        if (f.valor > media) {
+            count++;
+        }
+    }
+    return count;
+}
+
+int main() {
+    //Lê os dados do arquivo JSON
+    std::ifstream arquivo("faturamento.json");
+    if (!arquivo.is_open()) {
+        std::cerr << "Erro ao abrir o arquivo de faturamento!" << std::endl;
+        return 1;
+    }
+
+    json DadosJson;
+    arquivo >> DadosJson;
+    arquivo.close();
+
+    std::vector<Faturamento> faturamentos;
+
+    //Carregar os dados do JSON para o vetor
+    for (const auto& item : DadosJson) {
+        Faturamento f;
+        f.dia = item["dia"];
+        f.valor = item["valor"];
+        faturamentos.push_back(f);
+    }
+
+    //Inicializar valores para o cálculo
+    double MenorValor = std::numeric_limits<double>::max();
+    double MaiorValor = std::numeric_limits<double>::min();
+
+    //Determinar o menor e o maior valor de faturamento
+    for (const auto& f : faturamentos) {
+        if (f.valor > 0) { //Ignora dias sem faturamento
+            if (f.valor < MenorValor) MenorValor = f.valor;
+            if (f.valor > MaiorValor) MaiorValor = f.valor;
+        }
+    }
+
+    //Calcular a média mensal
+    double MediaMensal = CalcularMediaMensal(faturamentos);
+
+    //Contar os dias com faturamento acima da média
+    int DiasAcimaDaMedia = ContarDiasAcimaDaMedia(faturamentos, MediaMensal);
+
+    //Exibir os resultados
+    std::cout << "Menor valor de faturamento: " << MenorValor << std::endl;
+    std::cout << "Maior valor de faturamento: " << MaiorValor << std::endl;
+    std::cout << "Dias com faturamento acima da média: " << DiasAcimaDaMedia << std::endl;
+
+    return 0;
+}
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+* Exercício 4
+
+#include <iostream>
+#include <iomanip>
+
+int main() {
+    //Valores de faturamento por estado
+    double FaturamentoSP = 67836.43;
+    double FaturamentoRJ = 36678.66;
+    double FaturamentoMG = 29229.88;
+    double FaturamentoES = 27165.48;
+    double FaturamentoOutros = 19849.53;
+
+    //Calcular o faturamento total
+    double FaturamentoTotal = FaturamentoSP + FaturamentoRJ + FaturamentoMG + FaturamentoES + FaturamentoOutros;
+
+    //Calcular e exibir os percentuais
+    std::cout << std::fixed << std::setprecision(2); //Configura a precisão decimal
+    std::cout << "Percentual de representacao por estado:" << std::endl;
+    std::cout << "SP: " << (FaturamentoSP / FaturamentoTotal) * 100 << "%" << std::endl;
+    std::cout << "RJ: " << (FaturamentoRJ / FaturamentoTotal) * 100 << "%" << std::endl;
+    std::cout << "MG: " << (FaturamentoMG / FaturamentoTotal) * 100 << "%" << std::endl;
+    std::cout << "ES: " << (FaturamentoES / FaturamentoTotal) * 100 << "%" << std::endl;
+    std::cout << "Outros: " << (FaturamentoOutros / FaturamentoTotal) * 100 << "%" << std::endl;
+
+    return 0;
+}
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+* Exercício 5
+
+#include <iostream>
+#include <string>
+
+int main() {
+    //String de entrada
+    std::string str;
+    std::cout << "Digite uma string: ";
+    std::getline(std::cin, str);
+
+    //Inverter a string manualmente
+    int n = str.length(); //Tamanho da string
+    for (int i = 0; i < n / 2; i++) {
+        //Trocar os caracteres
+        char temp = str[i];
+        str[i] = str[n - 1 - i];
+        str[n - 1 - i] = temp;
+    }
+
+    //Exibir a string invertida
+    std::cout << "String invertida: " << str << std::endl;
+
+    return 0;
+}
