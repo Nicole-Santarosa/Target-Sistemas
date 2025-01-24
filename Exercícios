@@ -42,7 +42,6 @@ int main() {
 
 #include <iostream>
 #include <vector>
-#include <string>
 #include <fstream>
 #include <nlohmann/json.hpp>
 
@@ -80,7 +79,7 @@ int ContarDiasAcimaDaMedia(const std::vector<Faturamento>& faturamentos, double 
 
 int main() {
     //Lê os dados do arquivo JSON
-    std::ifstream arquivo("faturamento.json");
+    std::ifstream arquivo("dados.json");
     if (!arquivo.is_open()) {
         std::cerr << "Erro ao abrir o arquivo de faturamento!" << std::endl;
         return 1;
